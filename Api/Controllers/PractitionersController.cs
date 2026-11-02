@@ -1,5 +1,4 @@
 ﻿using Application.Practitioners;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -13,6 +12,20 @@ namespace Api.Controllers
         public PractitionersController(IPractitionerService practitionerService)
         {
             _practitionerService = practitionerService;
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll(CancellationToken ct)
+        {
+            var practitioners = await _practitionerService.GetAllAsync(ct);
+            return Ok(practitioners);
+        }
+
+        [HttpGet("specialties")]
+        public async Task<IActionResult> GetAllSpecialties(CancellationToken ct)
+        {
+            var specialties = await _practitionerService.GetAllSpecialtiesAsync(ct);
+            return Ok(specialties);
         }
 
         [HttpGet("by-specialty")]

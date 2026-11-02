@@ -18,6 +18,19 @@ namespace Infrastructure.Repositories
             _logger = logger;
         }
 
+        public async Task<IReadOnlyList<Practitioner>> GetAllAsync(CancellationToken ct = default)
+        {
+            _logger.LogInformation("Fetching all practitioners to extract specialties.");
+
+            return await _db.Practitioners
+                .Include(p => p.PractitionerNames)
+                .Include(p => p.PractitionerIdentifiers)
+                    .ThenInclude(i => i.IdentifierType)
+                .Include(p => p.PractitionerQualification)
+                .AsNoTracking()
+                .ToListAsync(ct);
+        }
+
         public async Task<IReadOnlyList<Practitioner>> GetBySpecialtyAsync(string specialtyCode, CancellationToken ct = default)
         {
             _logger.LogInformation("Fetching practitioners by specialty code: {SpecialtyCode}", specialtyCode);

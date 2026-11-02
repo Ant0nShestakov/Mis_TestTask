@@ -1,5 +1,4 @@
 ﻿using Application.Conditions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
