@@ -1,8 +1,6 @@
 ﻿using Domain.Common;
 using Domain.Entities.Common;
-using Domain.Entities.Conditions;
-using Domain.Entities.Encounters;
-using Domain.Entities.Observations;
+
 
 namespace Domain.Entities.Patients
 {
