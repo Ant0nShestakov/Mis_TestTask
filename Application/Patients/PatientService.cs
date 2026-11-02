@@ -1,4 +1,5 @@
-﻿using Application.Common.Exceptions;
+﻿using Application.Common.Dtos;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Conditions.Dtos;
 using Application.Encounters.Dtos;
@@ -60,6 +61,8 @@ public class PatientService : IPatientService
         var allObservations = await _observationRepo.GetByEncounterIdsAsync(encounterIds, ct);
         var observationsLookup = allObservations.ToLookup(o => o.EncounterId);
 
+        var primaryName = patient.PatientNames.FirstOrDefault();
+
         return new PatientDTO
         {
             Id = patient.Id,
@@ -67,11 +70,37 @@ public class PatientService : IPatientService
             Gender = patient.GenderType.ToString(),
             BirthDate = patient.BirthDate,
             IsDeceased = patient.IsDeceased,
-            MaritalStatus = patient.MaritalStatus?.DisplayName ?? "Не указано",
-            FullName = BuildFullName(patient),
-            Identifiers = patient.PatientIdentifiers
-                .Select(i => $"{i.IdentifierType?.DisplayName ?? "Тип"}: {i.Value}").ToList(),
-            Phones = patient.PatientTelecoms.Select(t => t.Value).ToList(),
+            DeceasedDateTime = patient.DeceasedDateTime,
+            MaritalStatus = patient.MaritalStatus != null ? new CodeableConceptDto
+            {
+                Code = patient.MaritalStatus.Code,
+                DisplayName = patient.MaritalStatus.DisplayName
+            } : null,
+
+            FullName = new HumanNameDto
+            {
+                Family = primaryName?.Family ?? "Не указана",
+                Name = primaryName?.Name ?? "Не указано",
+                Patronymic = primaryName?.Patronymic
+            },
+
+            Identifiers = patient.PatientIdentifiers.Select(i => new PatientIdentifierDto
+            {
+                System = i.IdentifierType?.DisplayName ?? "Неизвестно",
+                Value = i.Value
+            }).ToList(),
+
+            Telecoms = patient.PatientTelecoms.Select(t => new PatientTelecomDto
+            {
+                Type = t.TelecomType.ToString(),
+                Value = t.Value
+            }).ToList(),
+
+            Addresses = patient.PatientAddresses.Select(a => new PatientAddressDto
+            {
+                Type = a.AddressType.ToString(),
+                Address = a.FullAddress
+            }).ToList(),
 
             Conditions = conditions.Select(c => new ConditionShortDto
             {
@@ -80,7 +109,7 @@ public class PatientService : IPatientService
                 DisplayName = c.Code.DisplayName ?? "Без названия"
             }).ToList(),
 
-            Encounters = encounters.Select(e => new EncounterDto
+           Encounters = encounters.Select(e => new EncounterDto
             {
                 Id = e.Id,
                 PeriodStart = e.PeriodStart,

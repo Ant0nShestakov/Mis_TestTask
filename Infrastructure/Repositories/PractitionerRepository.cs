@@ -24,6 +24,8 @@ namespace Infrastructure.Repositories
 
             return await _db.Practitioners
                 .Include(p => p.PractitionerNames)
+                .Include(p => p.PractitionerIdentifiers)
+                    .ThenInclude(i => i.IdentifierType)
                 .Include(p => p.PractitionerQualification)
                 .Where(p => p.PractitionerQualification.Any(q => q.Code.Code == specialtyCode))
                 .AsNoTracking()

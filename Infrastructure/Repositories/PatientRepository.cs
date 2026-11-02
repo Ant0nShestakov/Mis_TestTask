@@ -26,6 +26,7 @@ namespace Infrastructure.Repositories
             return await _db.Patients
                 .Include(p => p.PatientNames)
                 .Include(p => p.PatientIdentifiers)
+                    .ThenInclude(i => i.IdentifierType)
                 .AsNoTracking()
                 .ToListAsync(ct);
         }
@@ -37,6 +38,7 @@ namespace Infrastructure.Repositories
             var patient = await _db.Patients
                 .Include(p => p.PatientNames)
                 .Include(p => p.PatientIdentifiers)
+                    .ThenInclude(i => i.IdentifierType)
                 .Include(p => p.PatientTelecoms)
                 .Include(p => p.PatientAddresses)
                 .FirstOrDefaultAsync(p => p.Id == id, ct);
