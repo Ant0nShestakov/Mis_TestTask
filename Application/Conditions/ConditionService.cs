@@ -20,7 +20,7 @@ public class ConditionService : IConditionService
         {
             Id = c.Id,
             Code = c.Code.Code,
-            DisplayName = c.Code.DisplayName ?? "Без названия",
+            DisplayName = c.Code?.DisplayName ?? "Без названия",
             PatientFullName = c.Patient?.PatientNames?.FirstOrDefault() != null
                 ? $"{c.Patient.PatientNames.First().Family} {c.Patient.PatientNames.First().Name}".Trim()
                 : "Неизвестный пациент",
