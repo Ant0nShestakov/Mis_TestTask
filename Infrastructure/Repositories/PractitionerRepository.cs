@@ -23,9 +23,8 @@ namespace Infrastructure.Repositories
             _logger.LogInformation("Fetching practitioners by specialty code: {SpecialtyCode}", specialtyCode);
 
             return await _db.Practitioners
-                .Include(p => p.PractitionerQualification)
                 .Include(p => p.PractitionerNames)
-
+                .Include(p => p.PractitionerQualification)
                 .Where(p => p.PractitionerQualification.Any(q => q.Code.Code == specialtyCode))
                 .AsNoTracking()
                 .ToListAsync(ct);

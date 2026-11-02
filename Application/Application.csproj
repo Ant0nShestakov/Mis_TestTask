@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Conditions\Dtos\" />
-    <Folder Include="Encounters\Dtos\" />
-    <Folder Include="Patients\Dtos\" />
-    <Folder Include="Practitioners\Dtos\" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>

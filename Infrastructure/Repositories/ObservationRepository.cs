@@ -26,5 +26,17 @@ namespace Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync(ct);
         }
+
+        public async Task<IReadOnlyList<Observation>> GetByEncounterIdsAsync(IEnumerable<Guid> encounterIds, CancellationToken ct = default)
+        {
+            var ids = encounterIds.ToList();
+
+            _logger.LogInformation("Fetching observations for {Count} encounters", ids.Count);
+
+            return await _db.Observations
+                .Where(o => o.EncounterId.HasValue && ids.Contains(o.EncounterId.Value))
+                .AsNoTracking()
+                .ToListAsync(ct);
+        }
     }
 }

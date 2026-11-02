@@ -20,10 +20,21 @@ namespace Infrastructure.Repositories
 
         public async Task<IReadOnlyList<Condition>> GetAllAsync(CancellationToken ct = default)
         {
-            _logger.LogInformation("Fetching all conditions (diseases).");
-
             return await _db.Conditions
                 .Include(c => c.Patient)
+                    .ThenInclude(p => p.PatientNames)
+                .Include(c => c.Recorder)
+                    .ThenInclude(r => r.PractitionerNames)
+                .AsNoTracking()
+                .ToListAsync(ct);
+        }
+
+        public async Task<IReadOnlyList<Condition>> GetByPatientIdAsync(Guid patientId, CancellationToken ct = default)
+        {
+            _logger.LogInformation("Fetching conditions for patient {PatientId}", patientId);
+
+            return await _db.Conditions
+                .Where(c => c.PatientId == patientId)
                 .AsNoTracking()
                 .ToListAsync(ct);
         }
