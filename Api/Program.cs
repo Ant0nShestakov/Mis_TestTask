@@ -24,7 +24,11 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.RoutePrefix = "info";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MIS API v1");
+    });
 }
 
 app.UseHttpsRedirection();
